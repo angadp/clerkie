@@ -16,6 +16,8 @@ app.listen(1984, function(){
 	console.log('Server started on port 1984..')
 })
 
+app.timeout = 10000
+
 app.get('/', async function(req, res) {
 	var re;
 	await Recurring.findAll().then(function(resp){re = resp});

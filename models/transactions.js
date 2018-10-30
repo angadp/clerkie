@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var recurring = require('./recurring.js');
+var config = require('../config.json');
 
 var transactionSchema = mongoose.Schema({
 	trans_id:{
@@ -31,19 +32,22 @@ var Transaction = module.exports = mongoose.model('Transaction',transactionSchem
 
 
 module.exports.setTransactions = async function(arr, callback){
+	//Sorting the charges by date
 	arr.sort(function (a, b) {
 	return a.date.localeCompare(b.date);
 	});
 	var len = arr.length;
-	console.log(arr)
+
 	for(var i=0;i<len;i++){
 		var name = arr[i].name
 		var user_id = arr[i].user_id
 		arr[i].date = new Date(arr[i].date)
+		//tags for searching
 		arr[i].names = []
 		naarr = name.split(" ")
 		var le = naarr.length
 		var ne = name.split(" ")
+		//filling in the tags
 		for(var j = le; j>0; j--)
 		{
 			var ne = ne.splice(0,j)
@@ -57,16 +61,16 @@ module.exports.setTransactions = async function(arr, callback){
     			user_id: user_id,
     			names: near.join(" ")
 			};
-			//console.log(query)
 			//Already recurring charge
 			var rec = await recurring.find(query).exec();
 			if(rec.length == 1)
 			{
-				if(Math.abs(rec[0].next_date - arr[i].date)<=14*24*60*60*1000)
+				if(Math.abs(rec[0].next_date - arr[i].date)<=config["recurrance-interval"] && Math.abs(arr[i].amount)<=Math.abs(rec[0].next_amt*config["recurrance-amount"]))
 				{
 					var new_rec = rec[0]
 					new_rec.next_date = new Date((rec[0].next_date.getTime() + new_rec.regular_int));
-					new_rec.recurring = true
+					if(config["fill-in-back"] == true)
+						new_rec.recurring = true
 					new_rec.transactions.push(arr[i])
 					await recurring.update({_id: new_rec._id}, new_rec, function(err, raw) {
 					    if (err) {
@@ -93,7 +97,7 @@ module.exports.setTransactions = async function(arr, callback){
 				if(trans.length == 1)
 				{
 					var newrecurring = new recurring;
-					newrecurring.next_amount = arr[i].amount;
+					newrecurring.next_amt = arr[i].amount;
 					newrecurring.next_date = new Date((arr[i].date.getTime() + (arr[i].date - trans[0].date)));
 					newrecurring.transactions = []
 					newrecurring.regular_int = (arr[i].date - trans[0].date)

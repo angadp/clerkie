@@ -13,7 +13,7 @@ var recurringSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	next_amount:{
+	next_amt:{
 		type: Number,
 		required: true
 	},
@@ -39,5 +39,5 @@ module.exports.setRecurring = function(arr, callback){
 }
 
 module.exports.findAll = async function(callback){
-	return await Recurring.find({}).exec()
+	return await Recurring.find({recurring:true}).sort({ "name": 1 }).exec()
 }
