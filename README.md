@@ -1,6 +1,6 @@
 # clerkie
 
-Clerkie Interiew test
+Clerkie Interview test
 
 API to find the recurring items in a list.
 
