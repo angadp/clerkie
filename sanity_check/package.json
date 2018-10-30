@@ -1,0 +1,20 @@
+{
+  "name": "be_challenge_test",
+  "version": "1.0.0",
+  "description": "Code for testing the BE coding challenge",
+  "main": "test_project.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sebastian Wigstroem",
+  "license": "ISC",
+  "dependencies": {
+    "deep-diff": "^1.0.2",
+    "mocha": "^5.2.0",
+    "readline-sync": "^1.4.9",
+    "request": "^2.88.0",
+    "underscore": "^1.9.1",
+    "uniqid": "^5.0.3",
+    "zeromq": "^5.1.0"
+  }
+}
